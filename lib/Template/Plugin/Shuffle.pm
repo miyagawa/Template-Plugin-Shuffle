@@ -2,16 +2,20 @@ package Template::Plugin::Shuffle;
 
 use strict;
 use vars qw($VERSION);
-$VERSION = 0.01;
+$VERSION = "0.02";
 
 use base qw(Template::Plugin);
 use Template::Plugin;
 use Template::Stash;
 use Algorithm::Numerical::Shuffle qw(shuffle);
 
-$Template::Stash::LIST_OPS->{shuffle} = sub {
-    return [ shuffle(@{$_[0]}) ];
-};
+sub new {
+    my ($pkg, $context, @args) = @_;
+    $context->define_vmethod('LIST', shuffle => sub {
+                                 return [ shuffle(@{$_[0]}) ];
+                             });
+    return $pkg->SUPER::new($context, @args);
+}
 
 1;
 __END__
